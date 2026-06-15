@@ -105,7 +105,7 @@ def search_listings(
 
 def suggest_outfit(new_item: dict, wardrobe: dict) -> str:
     """
-    Given a thrifted item and the user's wardrobe, suggest 1–2 complete outfits.
+    Given a thrifted item and the user's wardrobe, suggest 1-2 complete outfits.
 
     Args:
         new_item: A listing dict (the item the user is considering buying).
@@ -144,7 +144,7 @@ def suggest_outfit(new_item: dict, wardrobe: dict) -> str:
             Style tags: {", ".join(new_item["style_tags"])}
 
             Provide general styling advice.
-            Suggest 1–2 outfit ideas.
+            Suggest 1-2 outfit ideas.
             Keep the response under 120 words.
             """
     else:
@@ -167,20 +167,20 @@ def suggest_outfit(new_item: dict, wardrobe: dict) -> str:
             Their wardrobe contains:
             {wardrobe_text}
 
-            Suggest 1–2 complete outfits using the thrifted item
+            Suggest 1-2 complete outfits using the thrifted item
             and specific pieces from their wardrobe.
 
             Keep the response conversational and under 150 words.
         """
 
         response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile"
+            model="llama-3.3-70b-versatile",
             messages=[
                 {
                     "role": "user",
                     "content": prompt,
                 }
-            ]
+            ],
             temperature=0.7,
         )
     
