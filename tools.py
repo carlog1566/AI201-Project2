@@ -69,8 +69,36 @@ def search_listings(
 
     Before writing code, fill in the Tool 1 section of planning.md.
     """
-    # Replace this with your implementation
-    return []
+    
+    listings = load_listings()
+    description_keywords = set(description.lower().split())
+    scored_results = []
+
+    for listing in listings:
+        if max_price is not None and listing["price"] > max_price:
+            continue
+
+        if size is not None:
+            listing_size = listing["size"].lower()
+            if size.lower() not in listing_size:
+                continue
+
+        searchable_text = " ".join([
+            listing["title"],
+            listing["description"],
+            listing["category"],
+            " ".join(listing["style_tags"]),
+        ]).lower()
+
+        score = sum(1 for keyword in description_keywords if keyword in searchable_text)
+
+        if score > 0:
+            scored_results.append((score, listing))
+
+    scored_results.sort(key=lambda x: x[0], reverse=True)
+
+    return [listing for score, listing in scored_results]
+    
 
 
 # ── Tool 2: suggest_outfit ────────────────────────────────────────────────────
