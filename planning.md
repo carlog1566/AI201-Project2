@@ -76,6 +76,14 @@ The agent will genereate a caption using only the new item or asks for more info
 
 **How does your agent decide which tool to call next?**
 <!-- Describe the logic your planning loop uses. What does it look at? What conditions change its behavior? How does it know when it's done? -->
+1. The agent always begins by calling search_listings() using the user's query, size, preference, and budget.
+2. If no listings are returned, it immediately stops and returns a mesage suggesting the user broaden their search.
+3. If listings are found, the agent stores the top result as selected_item.
+4. The agent will then call suggest_outfit() using that item and the user's wardrobe.j
+5. The returned recommendation is then saved.
+6. The agent finally calls create_fit_card() using the outfit suggestion and selected item.
+7. The caption is then saved.
+8. The process then ends after all three outputs have been generated and returned back to the user.
 
 ---
 
