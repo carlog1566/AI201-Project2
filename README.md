@@ -52,6 +52,159 @@ from utils.data_loader import get_example_wardrobe
 wardrobe = get_example_wardrobe()
 ```
 
+## Tool Inventory
+
+### Tool 1: search_listings
+
+Purpose: 
+- Finds clothing listings that match a user's query based on description, size and budget
+
+Inputs:
+- description (str): Item description (e.g. "vintage graphic tee")
+- size (str | None): Clothing size filter (e.g. "M", "L", "S")
+- max_price (float | None): Maximum budget constraint
+
+Outputs:
+- list[dict] of matching listings sorted by relevance
+- Each listing includes: id (str), title (str), description (str), category (str), style_tags (str), size (str), price (float), brand (str), platform (str)
+- Returns [] if no matches exist
+
+### Tool 2: suggest_outfit
+
+Purpose: 
+- Generates outfit recommendations by combining a selected listing with items from the user's wardrobe.
+
+Inputs:
+- new_item (dict): Selected listing from search_listings
+- wardrobe (dict): User wardrobe (from get_example_wardrobe() or get_empty_wardrobe())
+
+Outputs:
+- str: Natural language outfit styling suggestion
+- If wardrobe is empty, returns general styling advice without wardrobe references
+
+### Tool 3: create_fit_card
+
+Purpose:
+- Generates a short social media caption based on the outfit and selected item.
+
+Inputs:
+- outfit (str): Output of suggest_outfit
+- item (dict): Selected listing
+
+Outputs:
+- str: Caption styled like Instagram/TikTok post text
+- If outfit is missing, generates fallback caption using listing only.
+
+## Planning Loop
+
+### Step 1: User Input
+
+- The system receives a natrual language query:
+
+    Example: "vintage graphic tee under $30 size M"
+- This input is passed into the planning loop as the starting state
+
+### Step 2: Planning Loop Initialization
+
+- A session dictionary is created to track all intermediate states such as original query, parsed parameters, tool outputs, and error state
+- This ensures all tool outputs are stored and accessible throughout execution
+
+### Step 3: Search Listings
+
+- The agent calls
+
+```python
+search_listings(query, size, budget)
+```
+- This is the first tool execution step and determines whether the pipeline continues
+- If results is empty, it will return an error like "No listings found. Try another search.", stop execution, and does not call any further tools
+- If results is not empty, we continue the pipeline
+
+### Step 4: Select Item
+
+- If results is not empty, we store the first item from the results array in the session
+```python
+selected_item = results[0]
+session["selected_item"] = selected_item
+```
+
+### Step 5: Suggest Outfit
+
+- The agent calls:
+```python
+suggest_outfit(selected_item, wardrobe)
+```
+- If wardrobe is empty, it will return general styling advice with no reference to the wardrobe
+- Else, it will generate an outfit recommendation using the selected item and the wardrobe items
+- The result is then stored into the session
+```python
+session["outfit_suggestion"]
+```
+
+### Step 6: Create Fit Card
+
+- The agent calls
+```python
+create_fit_card(outfit_suggestion, selected_item)
+```
+- If outfit_suggestion is missing or empty, it will generate a fallback caption using only the listed info
+- Else, it will generate a full styled caption
+- The result is then stored into the session
+```python
+session["fit_card"]
+```
+
+### Step 7: Final Output
+- The session is returned as the final result:
+- selected_item
+- outfit suggestion
+- fit_card
+- error (if any)
+
+## Error Handling
+
+### Tool 1: search_listings
+- Fails when there are no matching results
+
+Test Case:
+```python
+"designer ballgown size XXS under $5
+```
+Observed Behavior:
+- Returns []
+- Agent stops immediately
+
+Response:
+- "No matching lisstings found. Try adjusting your size, budget, or search terms."
+
+### Tool 2: suggest_outfit
+
+- Fails when the wardrobe is empty
+
+Test Case:
+```python
+get_empty_wardrobe()
+```
+Observed Behavior:
+- Returns general styling advice for the selected listing
+- No crash or exception
+
+Example Output:
+- "This piece works well with neutral basics and layered accessories for balance."
+
+### Tool 3: create_fit_card
+- Fails when it is missing the outfit string
+
+Test Case:
+```python
+create_fit_card("", selected_item)
+```
+Observed Behavior:
+- Returns fallback caption instead of crashing
+
+Example Output:
+- "Thrifted gem: vintage find at an unbeatable price"
+
 ## Where to Start
 
 1. **Read `planning.md` and fill it out before writing any code.**
