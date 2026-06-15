@@ -118,16 +118,16 @@ For each tool, describe the specific failure mode you're handling and what the a
      sketch are all fine. You'll share this diagram with an AI tool when asking it to implement
      the planning loop and each individual tool. -->
 
-                           ┌─────────────────────┐
-                           │     User Query      │
-                           └──────────┬──────────┘
-                                      │
-                                      ▼
-                           ┌─────────────────────┐
-                           │    Planning Loop    │
-                           └──────────┬──────────┘
-                                      │
-                                      ▼
+                       ┌─────────────────────┐
+                       │      User Query     │
+                       └──────────┬──────────┘
+                                  │
+                                  ▼
+                       ┌─────────────────────┐
+                       │    Planning Loop    │
+                       └──────────┬──────────┘
+                                  │
+                                  ▼
               ┌──────────────────────────────────────┐
               │ search_listings(query, size, budget) │
               └───────────────────┬──────────────────┘
@@ -172,7 +172,7 @@ For each tool, describe the specific failure mode you're handling and what the a
                    ▼                   ▼
       ┌─────────────────────┐ ┌─────────────────────┐
       │ Fallback caption    │ │ Session State       │
-      │ based on listing    │ │ fit_card            │
+      │ based on listing    │ │ fit_caption         │
       └──────────┬──────────┘ └───────────┬─────────┘
                  │                        │
                  └───────────┬────────────┘
@@ -182,7 +182,7 @@ For each tool, describe the specific failure mode you're handling and what the a
                   │ Final User Response │
                   │ • Selected Listing  │
                   │ • Outfit Suggestion │
-                  │ • Fit Card Caption  │
+                  │ • Fit Caption       │
                   └─────────────────────┘
 
 ---
@@ -201,8 +201,10 @@ For each tool, describe the specific failure mode you're handling and what the a
      before trusting it" is a plan. -->
 
 **Milestone 3 — Individual tool implementations:**
+I will use ChatGPT to implement each tool separately using the corresponding tool specifications from planning.md. For search_listings, I will provide the inputs, return values, failure handling, and the load_=istings() function and verify that the generated code filters each parameter correctly. For suggest_outfit and create_fit_card, I will provide their specifications and confirm that the outputs follow the required formats and are capable of handling the edge cases through testing.
 
 **Milestone 4 — Planning loop and state management:**
+I will provide ChatGPT with the planning loop, state management section, and architecture diagram to provide code that will connect each tool and test that the state passes correctly between them. I will verify that the code follows the exact branching behavior that is described in the spec and is able to handle the necessary edge cases properly and return the right response at the end of the loop.
 
 ---
 
