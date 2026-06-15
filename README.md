@@ -161,6 +161,26 @@ session["fit_card"]
 - fit_card
 - error (if any)
 
+## State Management
+The agent uses a session dictionary to store information throughout a single interaction
+
+The session tracks:
+- The original query
+- Parsed query parameters
+- Search results
+- The selected listing
+- The user's wardrobe
+- The outfit suggestion
+- The generated fit card
+- Any error messages
+
+Information is passed between tools through this session dictionary:
+- After search_listings(), the top result is stored as selected_tiem
+- selected_item and wardrobe are passed into suggest_outfit()
+- The returned outfit suggestion is stored as outfit_suggestion
+- outfit_suggestion and selected_item are passed into create_fit_card()
+- The resulting caption is stored as fit_card
+
 ## Error Handling
 
 ### Tool 1: search_listings
@@ -204,6 +224,27 @@ Observed Behavior:
 
 Example Output:
 - "Thrifted gem: vintage find at an unbeatable price"
+
+## Spec Reflection 
+One way the spec helped was by having the planning loop and error handling be designed before it was implemented in code. This made it easier to build and test each tool independently before connecting them together
+
+One way that implementation diverged from the original spec was in the query parsing. The spec didn't prescribe how to extract the description, size, and budget so during implementation, regex parsing was used since it was easier to test and more deterministic.
+
+## AI Usage
+
+### Instance 1: Planning Loop Implementation
+I provided ChatGPT with my planning loop, state management, and architecture diagram and asked it to help generate code for the agent logic. The generated output included the complete code for the planning loop and session structure. However, before using it I reviewed the code and modified it to ensure that:
+
+- the workflow stopped when no listings were found,
+- the selected item was stored in the session state before being passed to later tools, and
+- the tools were not called for no reason.
+
+### Instance 2: Gradio Integration
+I provided ChatGPT with the isntructions from app.py and asked it to help implement handle_query(). The genereated output correctly selected the wardrobes and called the agent, but I revised the implementation to:
+
+- add validation for empty user queries,
+- ensure error messages appeared only in the listing output panel, and
+- safely access session values when formatting the listing text.
 
 ## Where to Start
 
