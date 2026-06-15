@@ -91,6 +91,7 @@ The agent will genereate a caption using only the new item or asks for more info
 
 **How does information from one tool get passed to the next?**
 <!-- Describe how your agent stores and accesses state within a session. What data is tracked? How is it passed between tool calls? -->
+The agent stores information in a session dictionary as it moves through the workflow. It tracks the selected item from search_listings, the outfit suggestion from suggest_outfit, and the final caption from create_fit_card. Each tool uses information produced by the previous step, allowing the agent to build the final response incrementally.
 
 ---
 
