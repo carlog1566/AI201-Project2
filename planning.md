@@ -101,9 +101,9 @@ For each tool, describe the specific failure mode you're handling and what the a
 
 | Tool | Failure mode | Agent response |
 |------|-------------|----------------|
-| search_listings | No results match the query | |
-| suggest_outfit | Wardrobe is empty | |
-| create_fit_card | Outfit input is missing or incomplete | |
+| search_listings | No results match the query | Return: "I couldn't find any listings matching those preferences. Try adjusting your budget, size, or search terms." Stop the workflow. |
+| suggest_outfit | Wardrobe is empty | Provide general styling recommendation using the selected item wihtout referencing wardrobe pieces. |
+| create_fit_card | Outfit input is missing or incomplete | Genereate a simple fallback caption based on the selected listing, such as where it was found and the price. |
 
 ---
 
